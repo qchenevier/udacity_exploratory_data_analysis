@@ -1,3 +1,4 @@
 .R*
 *.xlsx
 *.pdf
+!project.pdf

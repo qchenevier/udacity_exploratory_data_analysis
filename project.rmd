@@ -1,0 +1,420 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+White Portuguese Wine Analysis by Quentin Chenevier
+========================================================
+
+This analysis aims at analysis a dataset about portuguese white wines. 
+
+
+The dataset is related to white variant of the Portuguese "Vinho Verde" wine (http://www.vinhoverde.pt/en/).
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE, message=FALSE, warning=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+# The other parameters for "message" and "warning" should also be set to FALSE
+# for other code chunks once you have verified that each plot comes out as you
+# want it to. This will clean up the flow of your report.
+library(dplyr)
+library(ggplot2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Load_the_Data}
+# Load the Data
+wv = read.csv('wineQualityWhites.csv')[, 2:13]
+
+wv$quality = factor(wv$quality)
+
+str(wv)
+
+```
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Load_the_Data_2}
+
+summary(wv)
+
+```
+
+
+ The inputs include objective tests (e.g. PH values) and the output is based on sensory data (median of at least 3 evaluations made by wine experts). Each expert graded the wine quality between 0 (very bad) and 10 (very excellent). The goal of the analysis is to find relationships between the measured inputs variables (the first 11 columns) and the output "quality" variable.
+
+
+
+# Univariate Plots Section
+
+In this section, preliminary exploration on each variable.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_1}
+ggplot(wv, aes(x = fixed.acidity)) +
+  geom_histogram(binwidth = 0.1)
+```
+
+
+Fixed Acidity seems to be a gaussian distribution.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_2}
+ggplot(wv, aes(x = volatile.acidity)) +
+  geom_histogram(binwidth = 0.01)
+
+```
+
+
+Volatile Acidity seems to be a right-skewed_distribution
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_3}
+ggplot(wv, aes(x = volatile.acidity)) +
+  scale_x_continuous(trans = 'log10') +
+  geom_histogram(bins = 60)
+
+```
+
+Given the shape of the distribution when we transform it with a log, maybe volatile acidity has a log relationship with other normally distributed variables. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_4}
+ggplot(wv, aes(x = citric.acid)) +
+  xlim(0, 0.75) +
+  geom_histogram(binwidth = 0.01)
+```
+
+
+Citric Acid seems to be a slightly right-skewed_distribution. There are some outliers (above 0.75) which need to be filtered to see a proper plot.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_5}
+
+ggplot(wv, aes(x = residual.sugar)) +
+  xlim(0, 25) +
+  geom_histogram(binwidth = 0.1)
+
+```
+
+
+Residual sugar is clearly not a gaussian distribution. There is a big gaussian mode with a low value and a continuum of higher values spread along the sugar spectrum.
+
+Further analysis is needed to see if this distribution can be splitted in several groups, based on a categorical value.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_6}
+
+ggplot(wv, aes(x = chlorides)) +
+  xlim(0, 0.1) +
+  geom_histogram(bins=60)
+
+```
+
+
+The chlorides variable seems to be a normal distribution.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_7}
+
+ggplot(wv, aes(x = free.sulfur.dioxide)) +
+  scale_x_continuous(limits = c(0, 100)) +
+  geom_histogram(bins=100)
+
+```
+
+
+The free sulfur dioxide distribution seems to be a bit right skewed 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_8}
+
+ggplot(wv, aes(x = total.sulfur.dioxide)) +
+  scale_x_continuous(limits = c(0, 300)) +
+  geom_histogram(bins=50)
+
+```
+
+
+The total sulfur dioxide distribution seems to be a bit right skewed 
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_9}
+
+ggplot(wv, aes(x = total.sulfur.dioxide)) +
+  scale_x_continuous(trans = 'sqrt', limits = c(0, 300)) +
+  geom_histogram(bins=50)
+
+```
+
+
+To investigate why the distribution is right skewed, we plot the square root transformation. It is suggesting that total sulfur dioxide has a square rooted gaussian distribution. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_10}
+ggplot(wv, aes(x = density)) +
+  scale_x_continuous(limits = c(0.98, 1.01)) +
+  geom_histogram(bins=50)
+
+```
+
+
+The density seems to be a gaussian distribution
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_11}
+ggplot(wv, aes(x = pH)) +
+  geom_histogram(bins=50)
+
+```
+
+The density seems to be a symmetric distribution
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_12}
+ggplot(wv, aes(x = sulphates)) +
+  geom_histogram()
+
+```
+
+The sulphates seems to be a bit right skewed.
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_13}
+ggplot(wv, aes(x = alcohol)) +
+  geom_histogram(bins=50)
+
+```
+
+The alcohol measure seems to be nearly evenly distributed in the range 8 to 14 degrees.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_14}
+ggplot(wv, aes(x = quality)) +
+  geom_bar()
+
+```
+
+The quality measure seems to be normally distributed.
+
+
+
+# Univariate Analysis
+
+
+### What is/are the main feature(s) of interest in your dataset?
+
+The dataset is made of 11 numerical features and 1 categorical feature (wine quality).
+
+I found that lots of variables seem to be normally distributed or to be right skewed, like a square root transform or a log transform of normal distribution. However, even with 4000+ more records, the distributions we see are noisy: there are modes (or pikes) that render the visual identification of a distribution less easy. A multivariate analysis might help to refine that. 
+
+
+The resiudual sugar feature seems to have a very peculiar distribution compared to the others. It might help create a new categorical feature (sweet or not sweet).
+
+
+I will try to investigate the relationship between the most normally distributed variables (like acidity, chlorides, sulfur and density related features)
+
+
+### Did you create any new variables from existing variables in the dataset?
+I didn't create new variables in the dataset, however I might try to do a log transform on the volatile acidity feature and square root transform on the total sulfur dioxide feature.  
+
+
+### Of the features you investigated, were there any unusual distributions?
+
+The most unusual distributions are the residual sugar one and the alcohol one. In the wine making process, those to variables are deeply intertwined and the wine makers are voluntarily altering those two. This could explain why those two variables are not normally distributed.  
+
+# Bivariate Plots Section
+
+In this section, some more deeper analysis of variables with bivariate plots
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_1}
+library(GGally)
+
+ggpairs(
+  subset(wv, residual.sugar < 30 & free.sulfur.dioxide < 150),
+  lower = list(
+    continuous = wrap("points", alpha = 0.1, size=0.1),
+    combo = wrap("dot_no_facet", alpha = 0.1, size=0.1)
+  )
+)
+
+
+```
+
+I don't see much obvious relationships between variables, appart from residual sugar, density and alcohol, which seem to be related. Density and alcohol seem to have a pretty weak relationship with quality. 
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_2}
+ggplot(subset(wv, residual.sugar < 30) , aes(x = residual.sugar, y = density)) +
+  geom_point(alpha = 0.1)
+
+```
+
+There is a clear positive relationship between residual sugar and density. Density increases with higher residual sugar concentration.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_3}
+ggplot(subset(wv, density < 1.005), aes(x = alcohol, y = density)) +
+  geom_point(alpha = 0.1)
+```
+
+There is a clear negative relationship between alcohol and density. Density decreases with higher alcohol content.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_4}
+ggplot(subset(wv, density < 1.005), aes(x = quality, y = density)) +
+  geom_boxplot()
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_5}
+ggplot(wv, aes(x = quality, y = alcohol)) +
+  geom_boxplot()
+```
+
+Those two boxplots seem to suggest that there is a relationship between quality, alcohol and density. Wines with more quality seem to all have a higher alcohol content and a lower density. It would be interesting to see if the relationship between density and quality is only due to the dependency of the density on alcohol.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_6}
+ggpairs(
+  subset(wv, residual.sugar < 30 & free.sulfur.dioxide < 150),
+  columns = c('residual.sugar', 'density', 'alcohol', 'quality'),
+  lower = list(
+    continuous = wrap("points", alpha = 0.3, size=0.1),
+    combo = wrap("dot_no_facet", alpha = 0.3, size=0.1)
+  )
+)
+
+```
+
+
+
+
+# Bivariate Analysis
+
+### Relationships
+There is a strong multivariate relationship between residual sugar, alcohol and density.
+
+Those last two variables (alcohol, density) seem to be partially linked to quality. It would be interesting to investigate the link of the three numerical features (residual sugar, alcohol, density) with the categorical "quality" feature.
+
+
+# Multivariate Plots Section
+
+In this section, deeper analysis of variable dependencies through multivariate plots.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots_1}
+ggplot(subset(wv, residual.sugar < 30) , aes(x = residual.sugar, y = density)) +
+  geom_point(alpha = 0.5, aes(color = alcohol))
+
+```
+
+
+This plot shows pretty clearly the cumulative impact of alcohol (color) and residual sugar (x axis) on the density. It seems that there is linear relationship between those 3 features.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots_2}
+ggpairs(
+  subset(wv, residual.sugar < 30),
+  columns = c('density', 'alcohol'),
+  mapping=ggplot2::aes(colour = quality),
+  lower = list(
+    continuous = wrap("points", alpha = 0.5, size = 0.3),
+    combo = wrap("dot_no_facet", alpha = 0.3, size=0.1)
+  ),
+  diag = list(
+    continuous = wrap("densityDiag", alpha = 0.3)
+  )
+)
+```
+
+This plot intends to show the dependency of quality on alcohol and density. Quality is a categorical variable with 7 categories, hence it is quite messy to understand. Let's create a new categorical variable "good/bad" based on a quality above a certain threshold. 
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,  Multivariate_Plots_3}
+wv_good = transform(subset(wv, residual.sugar < 30), good = factor(as.numeric(quality) > 4, labels= c("good", "bad")))
+ggpairs(
+  wv_good,
+  columns = c('density', 'alcohol'),
+  mapping=ggplot2::aes(colour = good),
+  lower = list(
+    continuous = wrap("density", size = 0.3),
+    combo = wrap("dot_no_facet", alpha = 0.3, size=0.1)
+  ),
+  diag = list(
+    continuous = wrap("densityDiag", alpha = 0.3)
+  )
+)
+```
+
+Here I chose the threshold "quality > 6" for a wine to be categorized as "good". We see a pretty strong dependency of the good wines on density and alcohol. Good wines have a low density and high alcohol.
+
+
+
+# Multivariate Analysis
+
+### Relationships
+The multivariate analysis confirms the relationship we saw between density, residual sugar and alcohol, during the bivariate analysis.
+
+We also saw the cumulative effect of density and alcohol content on quality, by creating a binary quality feature. 
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Summary_1}
+ggplot(subset(wv, residual.sugar < 30) , aes(x = residual.sugar, y = density)) +
+  geom_point(alpha = 0.1)
+
+```
+
+### Description One
+This plot shows that there is a strong dependency between the resiudal sugar content and the density of the wine. But wait, is this the only feature influencing the density ? Shouldn't alcohol play a role ?
+
+### Plot Two
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Summary_2}
+ggplot(subset(wv, residual.sugar < 30) , aes(x = residual.sugar, y = density)) +
+  geom_point(alpha = 0.5, aes(color = alcohol))
+
+```
+
+
+### Description Two
+
+This plot shows that the effect of alcohol on density are cumulative with residual sugar content. The higher the sugar content and the lower the alcohol, the higher the density. 
+
+
+### Plot Three
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Summary_3}
+wv_good = transform(subset(wv, residual.sugar < 30), good = factor(as.numeric(quality) > 4, labels= c("good", "bad")))
+ggpairs(
+  wv_good,
+  columns = c('density', 'alcohol'),
+  mapping=ggplot2::aes(colour = good),
+  lower = list(
+    continuous = wrap("density", size = 0.3),
+    combo = wrap("dot_no_facet", alpha = 0.3, size=0.1)
+  ),
+  diag = list(
+    continuous = wrap("densityDiag", alpha = 0.3)
+  )
+)
+```
+
+### Description Three
+
+This plot shows the dependency of quality on alcohol and density. We created a new binary feature: "good" if quality > 6  and "bad" otherwise. This plot shows that good wines have a tendency to have a high alcohol content and a low density. 
+
+------
+
+# Reflection
+
+It might be interesting to explore some transformation (log or square root) on some features to see if it would reinforce the relationship we investigated.
+
+In the end, building a linear model predicting quality of the wine based on density and alcohol content seems promising.
+

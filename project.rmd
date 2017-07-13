@@ -57,7 +57,11 @@ In this section, preliminary exploration on each variable.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_1}
 ggplot(wv, aes(x = fixed.acidity)) +
-  geom_histogram(binwidth = 0.1)
+  geom_histogram(binwidth = 0.1) +
+  labs(title = "Fixed acidity histogram", x = "fixed acidity (tartaric acid - g / dm^3)", y = "frequency")
+
+summary(wv$fixed.acidity)
+
 ```
 
 
@@ -66,8 +70,11 @@ Fixed Acidity seems to be a gaussian distribution.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_2}
 ggplot(wv, aes(x = volatile.acidity)) +
-  geom_histogram(binwidth = 0.01)
+  geom_histogram(binwidth = 0.01) +
+  labs(title = "Volatile acidity histogram", x = "volatile acidity (acetic acid - g / dm^3)", y = "frequency")
 
+
+summary(wv$volatile.acidity)
 ```
 
 
@@ -77,7 +84,9 @@ Volatile Acidity seems to be a right-skewed_distribution
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_3}
 ggplot(wv, aes(x = volatile.acidity)) +
   scale_x_continuous(trans = 'log10') +
+  labs(title = "Volatile acidity histogram", x = "volatile acidity (acetic acid - g / dm^3) - log scale", y = "frequency") +
   geom_histogram(bins = 60)
+
 
 ```
 
@@ -86,7 +95,12 @@ Given the shape of the distribution when we transform it with a log, maybe volat
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_4}
 ggplot(wv, aes(x = citric.acid)) +
   xlim(0, 0.75) +
-  geom_histogram(binwidth = 0.01)
+  geom_histogram(binwidth = 0.01) +
+  labs(title = "Citric acid histogram", x = "citric acid (g / dm^3)", y = "frequency")
+
+
+summary(wv$citric.acid)
+
 ```
 
 
@@ -96,7 +110,11 @@ Citric Acid seems to be a slightly right-skewed_distribution. There are some out
 
 ggplot(wv, aes(x = residual.sugar)) +
   xlim(0, 25) +
-  geom_histogram(binwidth = 0.1)
+  geom_histogram(binwidth = 0.1) +
+  labs(title = "Residual sugar histogram", x = "residual sugar (g / dm^3)", y = "frequency")
+
+summary(wv$residual.sugar)
+
 
 ```
 
@@ -109,7 +127,11 @@ Further analysis is needed to see if this distribution can be splitted in severa
 
 ggplot(wv, aes(x = chlorides)) +
   xlim(0, 0.1) +
-  geom_histogram(bins=60)
+  geom_histogram(bins=60) +
+  labs(title = "Chlorides histogram", x = "chlorides (sodium chloride - g / dm^3)", y = "frequency")
+
+summary(wv$chlorides)
+
 
 ```
 
@@ -121,7 +143,11 @@ The chlorides variable seems to be a normal distribution.
 
 ggplot(wv, aes(x = free.sulfur.dioxide)) +
   scale_x_continuous(limits = c(0, 100)) +
-  geom_histogram(bins=100)
+  geom_histogram(bins=100) +
+  labs(title = "Free sulfur dioxide histogram", x = "free sulfur dioxide (mg / dm^3)", y = "frequency")
+
+summary(wv$free.sulfur.dioxide)
+
 
 ```
 
@@ -132,7 +158,12 @@ The free sulfur dioxide distribution seems to be a bit right skewed
 
 ggplot(wv, aes(x = total.sulfur.dioxide)) +
   scale_x_continuous(limits = c(0, 300)) +
-  geom_histogram(bins=50)
+  geom_histogram(bins=50) +
+  labs(title = "Total sulfur dioxide histogram", x = "total sulfur dioxide (mg / dm^3)", y = "frequency")
+
+
+summary(wv$total.sulfur.dioxide)
+
 
 ```
 
@@ -144,7 +175,8 @@ The total sulfur dioxide distribution seems to be a bit right skewed
 
 ggplot(wv, aes(x = total.sulfur.dioxide)) +
   scale_x_continuous(trans = 'sqrt', limits = c(0, 300)) +
-  geom_histogram(bins=50)
+  geom_histogram(bins=50) +
+  labs(title = "Total sulfur dioxide histogram", x = "total sulfur dioxide (mg / dm^3) - square root scale", y = "frequency")
 
 ```
 
@@ -154,7 +186,11 @@ To investigate why the distribution is right skewed, we plot the square root tra
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_10}
 ggplot(wv, aes(x = density)) +
   scale_x_continuous(limits = c(0.98, 1.01)) +
-  geom_histogram(bins=50)
+  geom_histogram(bins=50) +
+  labs(title = "Density histogram", x = "density (g / cm^3)", y = "frequency")
+
+summary(wv$density)
+
 
 ```
 
@@ -163,7 +199,11 @@ The density seems to be a gaussian distribution
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_11}
 ggplot(wv, aes(x = pH)) +
-  geom_histogram(bins=50)
+  geom_histogram(bins=50) +
+  labs(title = "pH histogram", x = "pH", y = "frequency")
+
+summary(wv$pH)
+
 
 ```
 
@@ -173,7 +213,11 @@ The density seems to be a symmetric distribution
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_12}
 ggplot(wv, aes(x = sulphates)) +
-  geom_histogram()
+  geom_histogram() +
+  labs(title = "Sulphates histogram", x = "Sulphates (potassium sulphate - g / dm3)", y = "frequency")
+
+summary(wv$sulphates)
+
 
 ```
 
@@ -183,7 +227,11 @@ The sulphates seems to be a bit right skewed.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_13}
 ggplot(wv, aes(x = alcohol)) +
-  geom_histogram(bins=50)
+  geom_histogram(bins=50) +
+  labs(title = "Alcohol histogram", x = "alcohol (% by volume)", y = "frequency")
+
+summary(wv$alcohol)
+
 
 ```
 
@@ -192,7 +240,11 @@ The alcohol measure seems to be nearly evenly distributed in the range 8 to 14 d
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots_14}
 ggplot(wv, aes(x = quality)) +
-  geom_bar()
+  geom_bar() +
+  labs(title = "Quality histogram", x = "quality (score between 0 and 10)", y = "frequency")
+
+summary(wv$quality)
+
 
 ```
 
@@ -240,7 +292,6 @@ ggpairs(
   )
 )
 
-
 ```
 
 I don't see much obvious relationships between variables, appart from residual sugar, density and alcohol, which seem to be related. Density and alcohol seem to have a pretty weak relationship with quality. 
@@ -248,7 +299,11 @@ I don't see much obvious relationships between variables, appart from residual s
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_2}
 ggplot(subset(wv, residual.sugar < 30) , aes(x = residual.sugar, y = density)) +
-  geom_point(alpha = 0.1)
+  geom_point(alpha = 0.1) +
+  geom_smooth(method = lm, se = FALSE, color = "red") +
+  labs(title = "Density vs Residual sugar scatter plot", x = "residual sugar (g / dm^3)", y = "density (g / cm^3)")
+
+cor.test(~ residual.sugar + density, data = subset(wv, residual.sugar < 30))
 
 ```
 
@@ -257,7 +312,13 @@ There is a clear positive relationship between residual sugar and density. Densi
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_3}
 ggplot(subset(wv, density < 1.005), aes(x = alcohol, y = density)) +
-  geom_point(alpha = 0.1)
+  geom_point(alpha = 0.1) +
+  geom_smooth(method = lm, se = FALSE, color="red") +
+  labs(title = "Density vs Alcohol scatter plot", x = "alcohol (% by volume)", y = "density (g / cm^3)")
+
+cor.test(~ alcohol + density, data = subset(wv, density < 1.005))
+
+
 ```
 
 There is a clear negative relationship between alcohol and density. Density decreases with higher alcohol content.
@@ -265,13 +326,16 @@ There is a clear negative relationship between alcohol and density. Density decr
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_4}
 ggplot(subset(wv, density < 1.005), aes(x = quality, y = density)) +
-  geom_boxplot()
+  geom_boxplot() +
+  labs(title = "Density vs Quality box plot", x = "quality (score between 0 and 10)", y = "density (g / cm^3)")
+
 ```
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots_5}
 ggplot(wv, aes(x = quality, y = alcohol)) +
-  geom_boxplot()
+  geom_boxplot() +
+  labs(title = "Alcohol vs Quality box plot", x = "quality (score between 0 and 10)", y = "alcohol (% by volume)")
 ```
 
 Those two boxplots seem to suggest that there is a relationship between quality, alcohol and density. Wines with more quality seem to all have a higher alcohol content and a lower density. It would be interesting to see if the relationship between density and quality is only due to the dependency of the density on alcohol.
@@ -306,7 +370,10 @@ In this section, deeper analysis of variable dependencies through multivariate p
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots_1}
 ggplot(subset(wv, residual.sugar < 30) , aes(x = residual.sugar, y = density)) +
-  geom_point(alpha = 0.5, aes(color = alcohol))
+  geom_point(alpha = 0.5, aes(color = alcohol)) +
+  scale_color_gradient(low = "dark blue", high = "light blue") +
+  geom_smooth(method = lm, se = FALSE, color="red") +
+  labs(title = "Density vs Residual sugar scatter plot", x = "residual sugar (g / dm^3)", y = "density (g / cm^3)", color = "alcohol (% by volume)")
 
 ```
 
@@ -367,7 +434,10 @@ We also saw the cumulative effect of density and alcohol content on quality, by 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Summary_1}
 ggplot(subset(wv, residual.sugar < 30) , aes(x = residual.sugar, y = density)) +
-  geom_point(alpha = 0.1)
+  geom_point(alpha = 0.1) +
+  geom_smooth(method = lm, se = FALSE, color = "red") +
+  labs(title = "Density vs Residual sugar scatter plot", x = "residual sugar (g / dm^3)", y = "density (g / cm^3)")
+
 
 ```
 
@@ -378,7 +448,12 @@ This plot shows that there is a strong dependency between the resiudal sugar con
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Summary_2}
 ggplot(subset(wv, residual.sugar < 30) , aes(x = residual.sugar, y = density)) +
-  geom_point(alpha = 0.5, aes(color = alcohol))
+  geom_point(alpha = 0.5, aes(color = alcohol)) +
+  scale_color_gradient(low = "dark blue", high = "light blue") +
+  geom_smooth(method = lm, se = FALSE, color = "red") +
+  labs(title = "Density vs Residual sugar scatter plot", x = "residual sugar (g / dm^3)", y = "density (g / cm^3)", color = "alcohol (% by volume)")
+
+
 
 ```
 
@@ -413,6 +488,10 @@ This plot shows the dependency of quality on alcohol and density. We created a n
 ------
 
 # Reflection
+
+The main struggle to explore a dataset with many variables like that is to find variables gorups which seem to be correlated. I tried many combination with no success. It's only once I visualized all the bivariate scatter plots with a generalized pair plot (ggpair) that I could find some interesting combinations. 
+
+Also studying the influence of 2 continuous variables (density & alcohol) on a categorical variable with many values (quality) has proven to be difficult with pair plots. I decided to create a new binary variable much simpler to understand: good/bad. With that binary variable, it was easier to understand correlation between alcohol, density and this quality-related binary variable.   
 
 It might be interesting to explore some transformation (log or square root) on some features to see if it would reinforce the relationship we investigated.
 
